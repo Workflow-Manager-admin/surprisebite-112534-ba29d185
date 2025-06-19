@@ -17,6 +17,11 @@ function MainContainer() {
   const [manualInput, setManualInput] = useState({ zip: "", city: "" });
   const [error, setError] = useState(null);
 
+  // Filter state
+  const [cuisineFilter, setCuisineFilter] = useState("");
+  const [priceFilter, setPriceFilter] = useState("");
+  const [ratingFilter, setRatingFilter] = useState("");
+
   // For real code, this would go into a useEffect or be handled on load
   const handleLocationAccess = () => {
     setLocationStatus("requesting");
@@ -220,9 +225,94 @@ function MainContainer() {
           </div>
           {renderLocationSection()}
         </div>
-        {/* TODO: Filtering options (cuisine, price, rating) will be added here */}
-        <div style={{ color: "var(--text-secondary)", fontSize: 14, marginTop: 12 }}>
-          [Filter controls coming soon!]
+        {/* Filtering options (cuisine, price, rating) */}
+        <div style={{ display: "flex", gap: 24, marginTop: 18, flexWrap: "wrap", alignItems: "flex-end" }}>
+          {/* Cuisine Filter */}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label htmlFor="cuisine-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
+              Cuisine
+            </label>
+            <select
+              id="cuisine-filter"
+              value={cuisineFilter}
+              onChange={e => setCuisineFilter(e.target.value)}
+              style={{
+                borderRadius: 4,
+                border: "1px solid var(--border-color)",
+                padding: "7px 8px",
+                fontSize: 15,
+                minWidth: 110,
+                background: "#130f2f",
+                color: "#fff"
+              }}
+            >
+              <option value="">Any</option>
+              <option value="italian">Italian</option>
+              <option value="japanese">Japanese</option>
+              <option value="mexican">Mexican</option>
+              <option value="indian">Indian</option>
+              <option value="american">American</option>
+              <option value="thai">Thai</option>
+              <option value="mediterranean">Mediterranean</option>
+              <option value="chinese">Chinese</option>
+              <option value="vegan">Vegan</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          {/* Price Filter */}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label htmlFor="price-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
+              Price
+            </label>
+            <select
+              id="price-filter"
+              value={priceFilter}
+              onChange={e => setPriceFilter(e.target.value)}
+              style={{
+                borderRadius: 4,
+                border: "1px solid var(--border-color)",
+                padding: "7px 8px",
+                fontSize: 15,
+                minWidth: 80,
+                background: "#130f2f",
+                color: "#fff"
+              }}
+            >
+              <option value="">Any</option>
+              <option value="1">$</option>
+              <option value="2">$$</option>
+              <option value="3">$$$</option>
+              <option value="4">$$$$</option>
+            </select>
+          </div>
+
+          {/* Rating Filter */}
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <label htmlFor="rating-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
+              Min. Rating
+            </label>
+            <select
+              id="rating-filter"
+              value={ratingFilter}
+              onChange={e => setRatingFilter(e.target.value)}
+              style={{
+                borderRadius: 4,
+                border: "1px solid var(--border-color)",
+                padding: "7px 8px",
+                fontSize: 15,
+                minWidth: 90,
+                background: "#130f2f",
+                color: "#fff"
+              }}
+            >
+              <option value="">Any</option>
+              <option value="4.5">4.5★+</option>
+              <option value="4.0">4.0★+</option>
+              <option value="3.5">3.5★+</option>
+              <option value="3.0">3.0★+</option>
+            </select>
+          </div>
         </div>
       </section>
 
