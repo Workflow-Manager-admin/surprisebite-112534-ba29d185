@@ -1,7 +1,16 @@
 import React, { useState, useEffect, useCallback } from "react";
 import styles from "./MainContainer.module.css";
 import RestaurantCard from "./RestaurantCard";
-// Mock restaurant fetcher (simulates an API call)
+
+/**
+ * DEBUG NOTE:
+ * This MainContainer is currently using a mock fetchRestaurants. If you experience a 400 error with a real API, please check:
+ * - That none of the values (location/cuisine/price/rating) are null or malformed.
+ * - That the API expects specific property names or value types, such as strings/numbers.
+ * - If you swap in a real 'fetch' call, make sure NOT to submit undefined or empty strings for required parameters, and stringify objects if needed.
+ * - Logging the request payload and the real API's error message will help pinpoint 400 errors quickly!
+ */
+
 // PUBLIC_INTERFACE
 async function fetchRestaurants({ location, cuisine, price, rating }) {
   /** 
@@ -9,6 +18,11 @@ async function fetchRestaurants({ location, cuisine, price, rating }) {
    * Accepts {location, cuisine, price, rating} as arguments.
    * Returns mock data for demonstration. To integrate a real API,
    * replace this function with actual fetch logic.
+   * 
+   * For actual APIs:
+   * - Remove empty string fields from payload for 400 errors!
+   * - Verify that 'location' is not an object with both 'zip' and 'city' as empty.
+   * - Check if API expects location as *either* "lat/lon" OR "city/zip" (never both).
    */
   // Mock restaurant DB
   const sampleRestaurants = [
