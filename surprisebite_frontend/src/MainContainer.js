@@ -1,14 +1,123 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
 
-/**
- * MainContainer: Stateful root component for the SurpriseBite web app.
- * Acts as the central hub for restaurant discovery, filtering, surprise selection, and UI.
- *
- * Brand colors can be used via App.css CSS variables (e.g., var(--base-light), var(--base-dark), etc.).
- *
- * Handles location: attempts to use geolocation; uses manual entry (ZIP/city) as fallback.
- */
+// Mock restaurant fetcher (simulates an API call)
+// PUBLIC_INTERFACE
+async function fetchRestaurants({ location, cuisine, price, rating }) {
+  /** 
+   * This is a placeholder for a real API integration (e.g., Yelp/Google Places)
+   * Accepts {location, cuisine, price, rating} as arguments.
+   * Returns mock data for demonstration. To integrate a real API,
+   * replace this function with actual fetch logic.
+   */
+  // Mock restaurant DB
+  const sampleRestaurants = [
+    {
+      id: 1,
+      name: "Bella Italia",
+      cuisine: "italian",
+      price: "2",
+      rating: 4.5,
+      address: "123 Main St",
+      city: "San Francisco",
+      lat: 37.78,
+      lon: -122.41,
+    },
+    {
+      id: 2,
+      name: "Sushi Zen",
+      cuisine: "japanese",
+      price: "3",
+      rating: 4.6,
+      address: "129 Market St",
+      city: "San Francisco",
+      lat: 37.7844,
+      lon: -122.4076,
+    },
+    {
+      id: 3,
+      name: "Taco Veloz",
+      cuisine: "mexican",
+      price: "1",
+      rating: 4.3,
+      address: "450 Castro St",
+      city: "San Francisco",
+      lat: 37.7609,
+      lon: -122.435,
+    },
+    {
+      id: 4,
+      name: "Curry House",
+      cuisine: "indian",
+      price: "2",
+      rating: 4.1,
+      address: "600 Van Ness Ave",
+      city: "San Francisco",
+      lat: 37.7814,
+      lon: -122.4196,
+    },
+    {
+      id: 5,
+      name: "Vegan Table",
+      cuisine: "vegan",
+      price: "2",
+      rating: 4.8,
+      address: "870 Mission St",
+      city: "San Francisco",
+      lat: 37.7837,
+      lon: -122.4090,
+    },
+    {
+      id: 6,
+      name: "Panda Express",
+      cuisine: "chinese",
+      price: "1",
+      rating: 4.0,
+      address: "1 Dr Carlton B Goodlett Pl",
+      city: "San Francisco",
+      lat: 37.7793,
+      lon: -122.4192,
+    },
+    // Add more as wanted...
+  ];
+
+  function isNearby(mock, loc) {
+    // If user supplied city/zip, just filter by city string
+    if (loc?.city) {
+      return mock.city.toLowerCase().includes(loc.city.toLowerCase());
+    }
+    // For device lat/lon, crude radius (in production use great circle distance)
+    if (loc?.lat && loc?.lon) {
+      const dx = (mock.lat - loc.lat);
+      const dy = (mock.lon - loc.lon);
+      return (dx*dx + dy*dy) < 0.03; // ~close to <7km for SF mock, adjust for real API
+    }
+    return true;
+  }
+
+  // Simulate API latency
+  await new Promise((res) => setTimeout(res, 600));
+
+  // Filtering logic: location, cuisine, price, rating
+  let result = [...sampleRestaurants];
+  if (location) result = result.filter(r => isNearby(r, location));
+  if (cuisine) result = result.filter(r => r.cuisine === cuisine);
+  if (price) result = result.filter(r => r.price === price);
+  if (rating) result = result.filter(r => r.rating >= parseFloat(rating));
+
+  // Simulate empty result sometimes
+  if (result.length === 0 && location) {
+    // Fallback to any location if none found
+    result = sampleRestaurants.filter(r =>
+      (!cuisine || r.cuisine === cuisine) &&
+      (!price || r.price === price) &&
+      (!rating || r.rating >= parseFloat(rating))
+    );
+  }
+
+  return result;
+}
+
 // PUBLIC_INTERFACE
 function MainContainer() {
   // Location state
@@ -21,6 +130,42 @@ function MainContainer() {
   const [cuisineFilter, setCuisineFilter] = useState("");
   const [priceFilter, setPriceFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
+
+  // Restaurant list + fetch states
+  const [restaurants, setRestaurants] = useState([]);
+  const [restaurantsLoading, setRestaurantsLoading] = useState(false);
+  const [restaurantsError, setRestaurantsError] = useState("");
+
+  // Fetch restaurants logic (API integration)
+  const getRestaurants = useCallback(async () => {
+    if (!location || locationStatus !== "success") {
+      setRestaurants([]);
+      setRestaurantsError("");
+      return;
+    }
+    setRestaurantsLoading(true);
+    setRestaurantsError("");
+    try {
+      const data = await fetchRestaurants({
+        location,
+        cuisine: cuisineFilter,
+        price: priceFilter,
+        rating: ratingFilter,
+      });
+      setRestaurants(data);
+      if (!data.length) setRestaurantsError("No restaurants found for your criteria.");
+    } catch (err) {
+      setRestaurants([]);
+      setRestaurantsError("Failed to fetch restaurants.");
+    } finally {
+      setRestaurantsLoading(false);
+    }
+  }, [location, cuisineFilter, priceFilter, ratingFilter, locationStatus]);
+
+  // Fetch when location/filter changes
+  useEffect(() => {
+    getRestaurants();
+  }, [getRestaurants]);
 
   // For real code, this would go into a useEffect or be handled on load
   const handleLocationAccess = () => {
@@ -329,9 +474,33 @@ function MainContainer() {
         }}
       >
         <h2 style={{ marginTop: 0, marginBottom: 8 }}>Restaurant Info</h2>
-        {/* TODO: Restaurant display goes here */}
+        {/* Restaurant display */}
         <div style={{ color: "var(--text-secondary)", fontSize: 16 }}>
-          [Your surprise restaurant will appear here!]
+          {restaurantsLoading && <span>Loading restaurants...</span>}
+          {(!restaurantsLoading && restaurantsError) && (
+            <span style={{ color: "#fa6464" }}>{restaurantsError}</span>
+          )}
+          {(!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 0) && (
+            <span>
+              {restaurants.length === 1 && (
+                <span>
+                  <b>{restaurants[0].name}</b> ({restaurants[0].cuisine.charAt(0).toUpperCase()+restaurants[0].cuisine.slice(1)}) 
+                  <span style={{ marginLeft: 8 }}>{"$".repeat(restaurants[0].price)}</span>
+                  <span style={{ marginLeft: 8 }}>{restaurants[0].rating}★</span>
+                  <br />
+                  <span style={{ fontSize: 14 }}>{restaurants[0].address}</span>
+                </span>
+              )}
+              {restaurants.length > 1 && (
+                <span>
+                  {restaurants.length} restaurants found. Click "Surprise Me" to pick one at random!
+                </span>
+              )}
+            </span>
+          )}
+          {(!restaurantsLoading && !restaurantsError && (!restaurants || restaurants.length === 0)) && (
+            <span>[Your surprise restaurant will appear here!]</span>
+          )}
         </div>
       </section>
 
