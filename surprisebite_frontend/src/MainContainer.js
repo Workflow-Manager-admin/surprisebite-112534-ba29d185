@@ -604,9 +604,22 @@ function MainContainer() {
           className="btn"
           style={{ background: "var(--base-dark)", color: "var(--base-light)" }}
           onClick={() => {
-            getRestaurants();
+            // PUBLIC_INTERFACE
+            // Only reshuffle among current valid dataset (don't re-fetch from API)
+            if (restaurants && restaurants.length > 0) {
+              let newIdx;
+              if (restaurants.length === 1) {
+                newIdx = 0;
+              } else {
+                // Try to avoid picking same restaurant if possible
+                do {
+                  newIdx = Math.floor(Math.random() * restaurants.length);
+                } while (restaurants.length > 1 && restaurants[newIdx] === randomSelection);
+              }
+              setRandomSelection(restaurants[newIdx]);
+            }
           }}
-          disabled={restaurantsLoading}
+          disabled={restaurantsLoading || !restaurants || restaurants.length === 0}
         >
           Refresh
         </button>
