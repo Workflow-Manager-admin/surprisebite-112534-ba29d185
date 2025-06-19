@@ -135,16 +135,19 @@ function MainContainer() {
   const [restaurants, setRestaurants] = useState([]);
   const [restaurantsLoading, setRestaurantsLoading] = useState(false);
   const [restaurantsError, setRestaurantsError] = useState("");
+  const [randomSelection, setRandomSelection] = useState(null); // Holds randomly picked restaurant
 
   // Fetch restaurants logic (API integration)
   const getRestaurants = useCallback(async () => {
     if (!location || locationStatus !== "success") {
       setRestaurants([]);
       setRestaurantsError("");
+      setRandomSelection(null);
       return;
     }
     setRestaurantsLoading(true);
     setRestaurantsError("");
+    setRandomSelection(null);
     try {
       const data = await fetchRestaurants({
         location,
@@ -153,10 +156,18 @@ function MainContainer() {
         rating: ratingFilter,
       });
       setRestaurants(data);
-      if (!data.length) setRestaurantsError("No restaurants found for your criteria.");
+      if (!data.length) {
+        setRestaurantsError("No restaurants found for your criteria.");
+        setRandomSelection(null);
+      } else {
+        // pick a random one and set it
+        const idx = Math.floor(Math.random() * data.length);
+        setRandomSelection(data[idx]);
+      }
     } catch (err) {
       setRestaurants([]);
       setRestaurantsError("Failed to fetch restaurants.");
+      setRandomSelection(null);
     } finally {
       setRestaurantsLoading(false);
     }
@@ -480,22 +491,20 @@ function MainContainer() {
           {(!restaurantsLoading && restaurantsError) && (
             <span style={{ color: "#fa6464" }}>{restaurantsError}</span>
           )}
-          {(!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 0) && (
+
+          {/* Show the currently selected random restaurant, or explain status */}
+          {(!restaurantsLoading && !restaurantsError && randomSelection) && (
             <span>
-              {restaurants.length === 1 && (
-                <span>
-                  <b>{restaurants[0].name}</b> ({restaurants[0].cuisine.charAt(0).toUpperCase()+restaurants[0].cuisine.slice(1)}) 
-                  <span style={{ marginLeft: 8 }}>{"$".repeat(restaurants[0].price)}</span>
-                  <span style={{ marginLeft: 8 }}>{restaurants[0].rating}★</span>
-                  <br />
-                  <span style={{ fontSize: 14 }}>{restaurants[0].address}</span>
-                </span>
-              )}
-              {restaurants.length > 1 && (
-                <span>
-                  {restaurants.length} restaurants found. Click "Surprise Me" to pick one at random!
-                </span>
-              )}
+              <b>{randomSelection.name}</b> ({randomSelection.cuisine.charAt(0).toUpperCase() + randomSelection.cuisine.slice(1)})
+              <span style={{ marginLeft: 8 }}>{"$".repeat(randomSelection.price)}</span>
+              <span style={{ marginLeft: 8 }}>{randomSelection.rating}★</span>
+              <br />
+              <span style={{ fontSize: 14 }}>{randomSelection.address}</span>
+            </span>
+          )}
+          {(!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 1 && !randomSelection) && (
+            <span>
+              {restaurants.length} restaurants found. Click "Surprise Me" to pick one at random!
             </span>
           )}
           {(!restaurantsLoading && !restaurantsError && (!restaurants || restaurants.length === 0)) && (
@@ -514,13 +523,27 @@ function MainContainer() {
           marginTop: 12,
         }}
       >
-        {/* TODO: Main action buttons (Surprise Me, Try Another, etc.) */}
-        <button className="btn btn-large" style={{ minWidth: 150 }}>
+        {/* Main action buttons */}
+        <button
+          className="btn btn-large"
+          style={{ minWidth: 150 }}
+          onClick={() => {
+            if (restaurants && restaurants.length > 0) {
+              const idx = Math.floor(Math.random() * restaurants.length);
+              setRandomSelection(restaurants[idx]);
+            }
+          }}
+          disabled={restaurantsLoading || !restaurants || restaurants.length === 0}
+        >
           Surprise Me!
         </button>
         <button
           className="btn"
           style={{ background: "var(--base-dark)", color: "var(--base-light)" }}
+          onClick={() => {
+            getRestaurants();
+          }}
+          disabled={restaurantsLoading}
         >
           Refresh
         </button>
