@@ -1,4 +1,5 @@
 import React from "react";
+import styles from "./RestaurantCard.module.css";
 
 // PUBLIC_INTERFACE
 /**
@@ -30,24 +31,14 @@ function RestaurantCard({ restaurant }) {
   }
 
   return (
-    <div
-      style={{
-        background: "rgba(19,15,47, 0.09)",
-        borderRadius: 9,
-        padding: "24px 18px 18px 18px",
-        marginBottom: 4,
-        color: "#222",
-        boxShadow: "0 2px 16px #00b9ff11",
-      }}
-      data-testid="restaurant-card"
-    >
-      <div style={{ fontWeight: 600, fontSize: 24, marginBottom: 6 }}>
-        {restaurant.name}
+    <div className={styles.card} data-testid="restaurant-card">
+      <div className={styles.header}>{restaurant.name}</div>
+      <div className={styles.detailsRow}>
+        <span className={styles.badge}>{cuisine}</span>
+        <span className={styles.price}>{priceDisplay}</span>
+        <span className={styles.rating}>{restaurant.rating}★</span>
       </div>
-      <div style={{ color: "#168", fontWeight: 500 }}>
-        {cuisine} &bull; {priceDisplay} &bull; <span style={{ color: "#365" }}>{restaurant.rating}★</span>
-      </div>
-      <div style={{ fontSize: 15, margin: "8px 0 6px 0" }}>
+      <div className={styles.address}>
         {restaurant.address}
         {restaurant.city ? `, ${restaurant.city}` : ""}
       </div>
@@ -56,19 +47,7 @@ function RestaurantCard({ restaurant }) {
           href={mapsQuery}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn"
-          style={{
-            background: "var(--base-dark)",
-            color: "var(--base-light)",
-            border: "1px solid var(--base-light)",
-            display: "inline-block",
-            marginTop: 8,
-            fontWeight: 600,
-            textDecoration: "none",
-            padding: "9px 20px",
-            borderRadius: 4,
-            fontSize: 16,
-          }}
+          className={styles.mapBtn}
           data-testid="open-maps-btn"
         >
           Open in Google Maps →

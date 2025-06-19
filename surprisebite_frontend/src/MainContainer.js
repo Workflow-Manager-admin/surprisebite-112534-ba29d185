@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import "./App.css";
-
+import styles from "./MainContainer.module.css";
 import RestaurantCard from "./RestaurantCard";
 // Mock restaurant fetcher (simulates an API call)
 // PUBLIC_INTERFACE
@@ -259,24 +258,26 @@ function MainContainer() {
   const renderLocationSection = () => {
     if (locationStatus === "idle" || locationStatus === "error") {
       return (
-        <div style={{ marginTop: 8 }}>
+        <div className={styles.locationSection}>
           <button
-            className="btn"
-            style={{ background: "var(--base-light)", color: "#fff", minWidth: 130 }}
+            className={styles.locationActionBtn}
+            style={{ minWidth: 130 }}
             onClick={handleLocationAccess}
             data-testid="get-location-btn"
           >
             Use My Location
           </button>
           {error && (
-            <div style={{ color: "#fa6464", fontSize: 13, marginTop: 8 }}>{error}</div>
+            <div style={{ color: "var(--accent)", fontSize: 13, marginTop: 6 }}>
+              {error}
+            </div>
           )}
         </div>
       );
     }
     if (locationStatus === "requesting") {
       return (
-        <div style={{ color: "var(--base-light)", marginTop: 8 }}>
+        <div className={styles.locationStatus}>
           Fetching your location...
         </div>
       );
@@ -284,9 +285,10 @@ function MainContainer() {
     if (locationStatus === "manual") {
       return (
         <form
-          style={{ marginTop: 8, display: "flex", gap: 12, flexWrap: "wrap" }}
+          className={styles.locationSection}
           onSubmit={handleManualInputSubmit}
           data-testid="manual-location-form"
+          style={{ gap: 8 }}
         >
           <input
             type="text"
@@ -294,13 +296,8 @@ function MainContainer() {
             name="zip"
             value={manualInput.zip}
             onChange={handleManualInputChange}
-            style={{
-              borderRadius: 4,
-              border: "1px solid var(--border-color)",
-              padding: "7px 8px",
-              fontSize: 15,
-              width: 100
-            }}
+            className={styles.locationInput}
+            style={{width: 100}}
           />
           <span style={{ color: "var(--text-secondary)", alignSelf: "center" }}>or</span>
           <input
@@ -309,30 +306,18 @@ function MainContainer() {
             name="city"
             value={manualInput.city}
             onChange={handleManualInputChange}
-            style={{
-              borderRadius: 4,
-              border: "1px solid var(--border-color)",
-              padding: "7px 8px",
-              fontSize: 15,
-              width: 140
-            }}
+            className={styles.locationInput}
+            style={{width: 140}}
           />
           <button
             type="submit"
-            className="btn"
-            style={{ background: "var(--base-light)", color: "#fff" }}
+            className={styles.locationActionBtn}
           >
             Submit
           </button>
           <button
             type="button"
-            className="btn"
-            style={{
-              background: "var(--base-dark)",
-              color: "var(--base-light)",
-              border: "1px solid var(--base-light)",
-              marginLeft: 6
-            }}
+            className={styles.locationCancelBtn}
             onClick={() => {
               setManualInput({ zip: "", city: "" });
               setError(null);
@@ -342,7 +327,7 @@ function MainContainer() {
             Cancel
           </button>
           {error && (
-            <div style={{ color: "#fa6464", fontSize: 13, marginTop: 6, flexBasis: "100%" }}>{error}</div>
+            <div style={{ color: "var(--accent)", fontSize: 13, marginTop: 6, flexBasis: "100%" }}>{error}</div>
           )}
         </form>
       );
@@ -350,8 +335,8 @@ function MainContainer() {
     if (locationStatus === "success") {
       // Show the used location (city, zip, or lat/lon)
       return (
-        <div style={{ marginTop: 10 }}>
-          <span style={{ color: "var(--base-light)", fontWeight: 500 }}>
+        <div className={styles.locationSection}>
+          <span className={styles.locationDisplay}>
             {location
               ? location.city
                 ? `Location: ${location.city}`
@@ -361,13 +346,7 @@ function MainContainer() {
               : ""}
           </span>
           <button
-            className="btn"
-            style={{
-              background: "var(--base-dark)",
-              color: "var(--base-light)",
-              marginLeft: 16,
-              border: "1px solid var(--base-light)"
-            }}
+            className={styles.locationChangeBtn}
             onClick={() => {
               setLocation(null);
               setLocationStatus("idle");
@@ -385,34 +364,14 @@ function MainContainer() {
   };
 
   return (
-    <div className="container" style={{ marginTop: 56, marginBottom: 40 }}>
+    <div className={styles.container} style={{ marginTop: 56, marginBottom: 40 }}>
       {/* Filters Section */}
-      <section
-        style={{
-          background: "var(--base-dark)",
-          borderRadius: 8,
-          padding: "24px 20px",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-          marginBottom: 24,
-        }}
-      >
-        <h2 style={{ color: "var(--base-light)", margin: 0, fontSize: "1.15rem" }}>
-          Filters
-        </h2>
+      <section className={styles.filterBar}>
+        <h2>Filters</h2>
         {/* Surprise Mode Toggle */}
-        <div style={{ marginTop: 8, marginBottom: 10 }}>
+        <div className={styles.surpriseToggleRow}>
           <button
-            className="btn"
-            style={{
-              background: surpriseMode ? "var(--base-light)" : "var(--base-dark)",
-              color: surpriseMode ? "#fff" : "var(--base-light)",
-              border: "1px solid var(--base-light)",
-              padding: "8px 22px",
-              fontWeight: 600,
-              marginRight: 8,
-              boxShadow: surpriseMode ? "0 2px 8px #00ffff44" : "none",
-              transition: "all 0.1s"
-            }}
+            className={`${styles.surpriseToggle} ${surpriseMode ? styles.active : ""}`}
             onClick={() => setSurpriseMode(sm => !sm)}
             type="button"
             title={
@@ -431,7 +390,7 @@ function MainContainer() {
           </span>
         </div>
         {/* Location access UI with geolocation + fallback */}
-        <div style={{ marginTop: 10, marginBottom: 8, fontSize: 15 }}>
+        <div>
           <div style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
             Where are you eating?
           </div>
@@ -439,25 +398,15 @@ function MainContainer() {
         </div>
         {/* Filtering options (cuisine, price, rating), hidden if surpriseMode */}
         {!surpriseMode && (
-          <div style={{ display: "flex", gap: 24, marginTop: 18, flexWrap: "wrap", alignItems: "flex-end" }}>
+          <div className={styles.filterDetailRow}>
             {/* Cuisine Filter */}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label htmlFor="cuisine-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
-                Cuisine
-              </label>
+            <div className={styles.filterEntry}>
+              <label htmlFor="cuisine-filter">Cuisine</label>
               <select
                 id="cuisine-filter"
                 value={cuisineFilter}
                 onChange={e => setCuisineFilter(e.target.value)}
-                style={{
-                  borderRadius: 4,
-                  border: "1px solid var(--border-color)",
-                  padding: "7px 8px",
-                  fontSize: 15,
-                  minWidth: 110,
-                  background: "#130f2f",
-                  color: "#fff"
-                }}
+                className={styles.selectInput}
               >
                 <option value="">Any</option>
                 <option value="italian">Italian</option>
@@ -474,23 +423,13 @@ function MainContainer() {
             </div>
 
             {/* Price Filter */}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label htmlFor="price-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
-                Price
-              </label>
+            <div className={styles.filterEntry}>
+              <label htmlFor="price-filter">Price</label>
               <select
                 id="price-filter"
                 value={priceFilter}
                 onChange={e => setPriceFilter(e.target.value)}
-                style={{
-                  borderRadius: 4,
-                  border: "1px solid var(--border-color)",
-                  padding: "7px 8px",
-                  fontSize: 15,
-                  minWidth: 80,
-                  background: "#130f2f",
-                  color: "#fff"
-                }}
+                className={styles.selectInput}
               >
                 <option value="">Any</option>
                 <option value="1">$</option>
@@ -501,23 +440,13 @@ function MainContainer() {
             </div>
 
             {/* Rating Filter */}
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <label htmlFor="rating-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
-                Min. Rating
-              </label>
+            <div className={styles.filterEntry}>
+              <label htmlFor="rating-filter">Min. Rating</label>
               <select
                 id="rating-filter"
                 value={ratingFilter}
                 onChange={e => setRatingFilter(e.target.value)}
-                style={{
-                  borderRadius: 4,
-                  border: "1px solid var(--border-color)",
-                  padding: "7px 8px",
-                  fontSize: 15,
-                  minWidth: 90,
-                  background: "#130f2f",
-                  color: "#fff"
-                }}
+                className={styles.selectInput}
               >
                 <option value="">Any</option>
                 <option value="4.5">4.5★+</option>
@@ -531,54 +460,28 @@ function MainContainer() {
       </section>
 
       {/* Restaurant Info Section */}
-      <section
-        style={{
-          background: "var(--base-light)",
-          borderRadius: 10,
-          color: "var(--text-color)",
-          padding: "40px 26px",
-          marginBottom: 24,
-          boxShadow: "0 2px 18px rgba(60,202,240,0.09)",
-          minHeight: 130,
-        }}
-      >
-        <h2 style={{ marginTop: 0, marginBottom: 8 }}>Restaurant Info</h2>
+      <section className={styles.restaurantSection}>
+        <h2>Restaurant Info</h2>
         {/* Restaurant display */}
-        <div style={{ color: "var(--text-secondary)", fontSize: 16, minHeight: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{
+          color: "var(--text-secondary)",
+          fontSize: 16,
+          minHeight: 48,
+          width: "100%",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
           {restaurantsLoading && (
-            <span style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: 8,
-              color: 'var(--base-dark)',
-              fontWeight: 500,
-              fontSize: 17
-            }}>
-              <span 
-                style={{
-                  border: "3px solid var(--base-dark)",
-                  borderTop: "3px solid var(--base-light)",
-                  borderRadius: "50%",
-                  width: 22,
-                  height: 22,
-                  marginRight: 7,
-                  animation: "spin 1s linear infinite",
-                  display: 'inline-block'
-                }}
-              />
+            <span className={styles.restaurantLoadingSpin}>
+              <span className={styles.spinLoader} />
               Loading restaurants...
-              <style>{`
-                @keyframes spin {
-                  0% { transform: rotate(0deg);}
-                  100% { transform: rotate(360deg);}
-                }
-              `}</style>
             </span>
           )}
 
           {/* Error state */}
           {!restaurantsLoading && restaurantsError && (
-            <span style={{ color: "#fa6464", fontWeight: 500 }}>
+            <span className={styles.restaurantError}>
               {restaurantsError || "Something went wrong fetching restaurants."}
             </span>
           )}
@@ -588,66 +491,46 @@ function MainContainer() {
             <RestaurantCard restaurant={randomSelection} />
           )}
 
-          {/* If there are restaurants but no current selection (shouldn't normally happen, but fallback) */}
+          {/* If there are restaurants but no current selection */}
           {!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 1 && !randomSelection && (
-            <span>
+            <span className={styles.restaurantEmpty}>
               {restaurants.length} restaurants found. Click "Surprise Me" to pick one at random!
             </span>
           )}
 
           {/* Empty state: no restaurants found */}
           {!restaurantsLoading && !restaurantsError && (!restaurants || restaurants.length === 0) && (
-            <span style={{
-              fontStyle: "italic",
-              color: '#1A1A1A',
-              opacity: 0.74
-            }}>[No restaurants found for your search. Try different filters or location!]</span>
+            <span className={styles.restaurantEmpty}>
+              [No restaurants found for your search. Try different filters or location!]
+            </span>
           )}
         </div>
       </section>
 
       {/* Action Buttons Section */}
-      <section
-        style={{
-          display: "flex",
-          gap: 18,
-          justifyContent: "center",
-          alignItems: "center",
-          marginTop: 12,
-        }}
-      >
-        {/* Main action buttons */}
+      <section className={styles.actionBar}>
         <button
-          className="btn btn-large"
-          style={{
-            minWidth: 150,
-            background: surpriseMode ? "var(--base-dark)" : "var(--base-light)",
-            color: surpriseMode ? "var(--base-light)" : "#fff",
-            border: "1px solid var(--base-light)"
-          }}
+          className={styles.modernBtn}
           onClick={() => {
-            // Pick from all restaurants if surpriseMode, otherwise from filtered
             if (restaurants && restaurants.length > 0) {
               const idx = Math.floor(Math.random() * restaurants.length);
               setRandomSelection(restaurants[idx]);
             }
           }}
+          style={{ minWidth: 150 }}
           disabled={restaurantsLoading || !restaurants || restaurants.length === 0}
         >
           {surpriseMode ? "SURPRISE ME! (ignore filters)" : "Surprise Me!"}
         </button>
         <button
-          className="btn"
-          style={{ background: "var(--base-dark)", color: "var(--base-light)" }}
+          className={`${styles.modernBtn} ${styles.secondary}`}
           onClick={() => {
             // PUBLIC_INTERFACE
-            // Only reshuffle among current valid dataset (don't re-fetch from API)
             if (restaurants && restaurants.length > 0) {
               let newIdx;
               if (restaurants.length === 1) {
                 newIdx = 0;
               } else {
-                // Try to avoid picking same restaurant if possible
                 do {
                   newIdx = Math.floor(Math.random() * restaurants.length);
                 } while (restaurants.length > 1 && restaurants[newIdx] === randomSelection);
@@ -659,7 +542,6 @@ function MainContainer() {
         >
           Refresh
         </button>
-        {/* Add additional action buttons as needed */}
       </section>
     </div>
   );

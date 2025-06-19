@@ -1,0 +1,294 @@
+:root {
+  --primary: #4CAF50;
+  --secondary: #FFC107;
+  --accent: #FF5722;
+  --background: #f7fafb;
+  --card-bg: #fff;
+  --card-shadow: 0 4px 18px rgba(44,62,80,0.09), 0 1.5px 5px rgba(65,184,131,0.06);
+  --box-shadow-hover: 0 6px 26px 2px rgba(76,175,80,0.15);
+  --input-bg: #f3f5f9;
+  --input-border: #e3eaf2;
+  --divider: #e0e4eb;
+  --text-main: #263238;
+  --text-secondary: #6d7682;
+  --filter-bar-shadow: 0 2px 7px rgba(76,175,80,0.07);
+}
+
+.container {
+  max-width: 530px;
+  margin: 0 auto;
+  padding: 0 12px 4vh 12px;
+  width: 100%;
+}
+
+.filterBar {
+  background: var(--card-bg);
+  border-radius: 1.2em;
+  box-shadow: var(--filter-bar-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 2rem 1.3rem 1.5rem 1.3rem;
+  margin-bottom: 26px;
+  border: 1.5px solid var(--divider);
+  z-index: 2;
+}
+
+.filterBar h2 {
+  color: var(--primary);
+  margin: 0 0 0.5rem 0;
+  font-size: 1.18rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.surpriseToggleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.surpriseToggle {
+  background: var(--card-bg);
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  border-radius: 2em;
+  padding: 0.5em 1.3em;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 1px 6px rgba(76,175,80,0.02);
+  transition: background 0.15s, color 0.13s, box-shadow 0.15s;
+}
+.surpriseToggle.active {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: 0 2px 13px #4caf5077;
+}
+.surpriseToggle:active {
+  transform: scale(0.98);
+}
+
+.filterDetailRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 22px;
+  align-items: flex-end;
+  margin-top: 10px;
+}
+
+.filterEntry {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 90px;
+  min-width: 90px;
+  max-width: 170px;
+}
+
+.filterEntry label {
+  font-size: 0.96em;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+.selectInput, .locationInput {
+  font-size: 1em;
+  border: 1.5px solid var(--input-border);
+  border-radius: 7px;
+  background: var(--input-bg);
+  padding: 8px 10px;
+  color: var(--text-main);
+  margin-bottom: 0;
+  transition: border 0.17s;
+  outline: none;
+}
+.selectInput:focus, .locationInput:focus {
+  border-color: var(--primary);
+}
+
+.locationActionBtn {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 2em;
+  padding: 7.5px 22px;
+  font-size: 1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.16s, box-shadow 0.18s;
+  box-shadow: 0 1px 7px rgba(76,175,80,0.08);
+}
+.locationActionBtn:hover, .locationActionBtn:focus {
+  background: var(--accent);
+}
+.locationCancelBtn {
+  background: var(--card-bg);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  border-radius: 2em;
+  margin-left: 7px;
+  padding: 7.5px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.locationCancelBtn:hover, .locationCancelBtn:focus {
+  background: #eafcf1;
+}
+
+.locationSection {
+  gap: 11px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0.65em 0;
+}
+
+.locationStatus {
+  color: var(--primary);
+  font-weight: 500;
+  margin-bottom: 5px;
+}
+
+.locationDisplay {
+  color: var(--primary);
+  font-weight: 600;
+}
+.locationChangeBtn {
+  margin-left: 12px;
+  background: var(--card-bg);
+  color: var(--primary);
+  border: 1.5px solid var(--primary);
+  border-radius: 2em;
+  padding: 5.5px 21px;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95em;
+  transition: background 0.14s;
+}
+.locationChangeBtn:hover {
+  background: #eafcf1;
+}
+
+.restaurantSection {
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border-radius: 1.25em;
+  padding: 2.6rem 2rem 2.2rem 2rem;
+  margin-bottom: 21px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 135px;
+  transition: box-shadow 0.18s;
+}
+
+.restaurantSection h2 {
+  margin: 0 0 0.6em 0;
+  color: var(--primary);
+  font-size: 1.22rem;
+  font-weight: 700;
+}
+
+.restaurantLoadingSpin {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+}
+@keyframes modernspin {
+  0% { transform: rotate(0deg);}
+  100% { transform: rotate(360deg);}
+}
+.spinLoader {
+  border: 3px solid var(--primary);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  margin-right: 7px;
+  animation: modernspin 0.9s linear infinite;
+}
+
+.restaurantError {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 1.1em;
+}
+.restaurantEmpty {
+  color: var(--text-secondary);
+  font-style: italic;
+  font-size: 1em;
+  opacity: 0.76;
+  text-align: center;
+  margin: 10px 0;
+}
+
+.actionBar {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  margin: 22px 0 0 0;
+  flex-wrap: wrap;
+}
+
+.modernBtn {
+  background-color: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 2em;
+  padding: 13px 36px;
+  font-size: 1.11rem;
+  font-family: inherit;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 1.5px 8px rgba(76,175,80,0.09);
+  cursor: pointer;
+  margin-bottom: 7px;
+  border: 2px solid var(--primary);
+  transition: background 0.18s, color 0.17s, box-shadow 0.2s;
+}
+.modernBtn.secondary {
+  background-color: var(--card-bg);
+  color: var(--secondary);
+  border-color: var(--secondary);
+}
+.modernBtn.accent {
+  background-color: var(--accent);
+  color: #fff;
+  border: 2px solid var(--accent);
+}
+.modernBtn:hover, .modernBtn:focus {
+  background-color: var(--accent);
+  color: #fff;
+  box-shadow: var(--box-shadow-hover);
+}
+.modernBtn.secondary:hover, .modernBtn.secondary:focus {
+  background: var(--secondary);
+  color: #fff;
+}
+.modernBtn:active { transform: scale(0.98); }
+
+@media (max-width: 800px) {
+  .container {
+    max-width: 100vw;
+    padding: 0 6vw 4vh 6vw;
+  }
+  .restaurantSection {
+    padding: 2rem 0.7rem 1.6rem 0.7rem;
+  }
+}
+@media (max-width: 543px) {
+  .filterBar { padding: 1.08em 0.4em 0.85em 0.7em;}
+  .restaurantSection {padding: 1.4em 0.22em 1.6em 0.2em;}
+  .container {padding: 0 2vw 3.5vh 2vw;}
+}
+
+@media (max-width: 430px) {
+  .filterBar, .restaurantSection {padding-left: 0 !important; padding-right: 0 !important;}
+  .container {padding-left: 0px; padding-right: 0px;}
+}
