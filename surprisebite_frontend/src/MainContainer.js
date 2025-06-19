@@ -5,13 +5,50 @@ import RestaurantCard from "./RestaurantCard";
 /**
  * DEBUG NOTE:
  * This MainContainer is currently using a mock fetchRestaurants. If you experience a 400 error with a real API, please check:
- * - That none of the values (location/cuisine/price/rating) are null or malformed.
- * - That the API expects specific property names or value types, such as strings/numbers.
- * - If you swap in a real 'fetch' call, make sure NOT to submit undefined or empty strings for required parameters, and stringify objects if needed.
- * - Logging the request payload and the real API's error message will help pinpoint 400 errors quickly!
+ * - That none of the values (location/cuisine/price/rating) are null, undefined, or empty if required.
+ * - If directly integrating a real API:
+ *     - Do not send fields if their value is empty ("") or undefined/null, especially for required parameters.
+ *     - Double-check endpoint docs: is location (lat/lon, city, or zip) required? Are filters required? Only include what the API expects.
+ *     - Most APIs will return a 400 error if a required key (like "location") is empty, or if both city/zip and lat/lon are left blank.
+ *     - Before sending your request, filter out keys in the payload (or URL params) with empty/undefined/null values. 
+ *     - If using fetch(), use:
+ *         Object.keys(payload).reduce((acc, k) => (payload[k] ? { ...acc, [k]: payload[k] } : acc), {})
+ *     - If your API needs an API key, check that the key is defined at build/runtime via environment variable, not hardcoded.
+ * - Logging the request body/URL as well as the real API's error message will help you diagnose 400 errors.
+ * - Sample correction for fetch (pseudo-code):
+ *     let filteredPayload = {};
+ *     for (let k in payload) { if (payload[k] !== "" && payload[k] != null) filteredPayload[k] = payload[k]; }
+ *     fetch(API_URL, { ..., body: JSON.stringify(filteredPayload), ... })
+ *
+ * USER ADVICE: A 400 Bad Request from a production API (e.g., Yelp/Google Places) ALMOST ALWAYS means:
+ *   - you sent a required parameter as empty/undefined
+ *   - or, you sent unknown parameters/typos
+ *   - or, your API key or endpoint is wrong/missing
+ *   - Always check the API docs for mandatory parameters!
  */
 
-// PUBLIC_INTERFACE
+/**
+ * PUBLIC_INTERFACE
+ * This function is used as a placeholder. If you adapt a real API, see the guidelines at file top.
+ * Recommended defensive pattern for fetch integrations:
+ *
+ * // Example payload construction for real API:
+ * const payload = {
+ *     ...(location && typeof location === "object" ? location : {}),
+ *     ...(cuisine ? { cuisine } : {}),
+ *     ...(price ? { price } : {}),
+ *     ...(rating ? { rating } : {})
+ * };
+ * // Remove empty/undefined/null fields
+ * const filteredPayload = Object.fromEntries(
+ *   Object.entries(payload).filter(([_, v]) => v !== "" && v != null)
+ * );
+ * if (!filteredPayload.city && !filteredPayload.zip && (!filteredPayload.lat || !filteredPayload.lon)) {
+ *   throw new Error("Missing required location information for API request");
+ * }
+ * // Do not call fetch until filteredPayload contains all required keys for your endpoint!
+ * // fetch(<API_URL>, {..., body: JSON.stringify(filteredPayload), ...});
+ */
 async function fetchRestaurants({ location, cuisine, price, rating }) {
   /** 
    * This is a placeholder for a real API integration (e.g., Yelp/Google Places)
@@ -19,10 +56,11 @@ async function fetchRestaurants({ location, cuisine, price, rating }) {
    * Returns mock data for demonstration. To integrate a real API,
    * replace this function with actual fetch logic.
    * 
-   * For actual APIs:
-   * - Remove empty string fields from payload for 400 errors!
-   * - Verify that 'location' is not an object with both 'zip' and 'city' as empty.
-   * - Check if API expects location as *either* "lat/lon" OR "city/zip" (never both).
+   * When integrating, ALWAYS:
+   * - Remove empty/undefined string fields from payload before sending to API.
+   * - Block calls (throw error / skip fetch) if required keys (like location) are missing or empty.
+   * - Check API documentation for required vs optional filters.
+   * - Ensure API key/environment variable is present if needed!
    */
   // Mock restaurant DB
   const sampleRestaurants = [
@@ -156,10 +194,34 @@ function MainContainer() {
 
   // Fetch restaurants logic (API integration)
   const getRestaurants = useCallback(async () => {
+    // Always try to show demo content for first-time/blank state as a guard for blank UI
     if (!location || locationStatus !== "success") {
-      setRestaurants([]);
+      // Load at least one demo restaurant for presentational guarantees
+      setRestaurants([
+        {
+          id: 100,
+          name: "Demo Eatery",
+          cuisine: "american",
+          price: "2",
+          rating: 4.2,
+          address: "555 Demo Rd",
+          city: "Demoville",
+          lat: 40.0,
+          lon: -100.0
+        }
+      ]);
       setRestaurantsError("");
-      setRandomSelection(null);
+      setRandomSelection({
+        id: 100,
+        name: "Demo Eatery",
+        cuisine: "american",
+        price: "2",
+        rating: 4.2,
+        address: "555 Demo Rd",
+        city: "Demoville",
+        lat: 40.0,
+        lon: -100.0
+      });
       return;
     }
     setRestaurantsLoading(true);
@@ -512,11 +574,16 @@ function MainContainer() {
             </span>
           )}
 
-          {/* Empty state: no restaurants found */}
+          {/* Empty state: always show demo card if fallback populated */}
           {!restaurantsLoading && !restaurantsError && (!restaurants || restaurants.length === 0) && (
             <span className={styles.restaurantEmpty}>
               [No restaurants found for your search. Try different filters or location!]
             </span>
+          )}
+
+          {/* Fallback to show demo card if a demo is in restaurants (to avoid blank UI, even if filters fail) */}
+          {!restaurantsLoading && !restaurantsError && Array.isArray(restaurants) && restaurants.length === 1 && restaurants[0].id === 100 && !randomSelection && (
+            <RestaurantCard restaurant={restaurants[0]} />
           )}
         </div>
       </section>

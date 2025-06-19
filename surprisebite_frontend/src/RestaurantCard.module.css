@@ -9,13 +9,15 @@
 .card {
   background: var(--card-bg);
   border-radius: 1.15em;
-  box-shadow: var(--shadow);
-  padding: 2rem 1.5rem 1.2rem 1.5rem;
-  margin-bottom: 0.7em;
-  color: #24282e;
+  box-shadow: 0 2px 10px rgba(44,62,80,0.11); /* softer shadow */
+  padding: 1.18rem 1.1rem 1rem 1.1rem;
+  margin-bottom: 0.8em;
+  color: #262626;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  width: 98%;
+  min-width: 0;
   transition: box-shadow 0.17s, background 0.14s;
   position: relative;
 }
