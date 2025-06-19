@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import "./App.css";
 
+import RestaurantCard from "./RestaurantCard";
 // Mock restaurant fetcher (simulates an API call)
 // PUBLIC_INTERFACE
 async function fetchRestaurants({ location, cuisine, price, rating }) {
@@ -549,15 +550,9 @@ function MainContainer() {
             <span style={{ color: "#fa6464" }}>{restaurantsError}</span>
           )}
 
-          {/* Show the currently selected random restaurant, or explain status */}
+          {/* Show the currently selected random restaurant with detail card */}
           {(!restaurantsLoading && !restaurantsError && randomSelection) && (
-            <span>
-              <b>{randomSelection.name}</b> ({randomSelection.cuisine.charAt(0).toUpperCase() + randomSelection.cuisine.slice(1)})
-              <span style={{ marginLeft: 8 }}>{"$".repeat(randomSelection.price)}</span>
-              <span style={{ marginLeft: 8 }}>{randomSelection.rating}★</span>
-              <br />
-              <span style={{ fontSize: 14 }}>{randomSelection.address}</span>
-            </span>
+            <RestaurantCard restaurant={randomSelection} />
           )}
           {(!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 1 && !randomSelection) && (
             <span>
