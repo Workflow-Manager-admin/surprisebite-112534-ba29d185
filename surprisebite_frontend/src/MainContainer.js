@@ -131,6 +131,9 @@ function MainContainer() {
   const [priceFilter, setPriceFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("");
 
+  // Surprise Mode state: if true, ignore all filters (except location)
+  const [surpriseMode, setSurpriseMode] = useState(false);
+
   // Restaurant list + fetch states
   const [restaurants, setRestaurants] = useState([]);
   const [restaurantsLoading, setRestaurantsLoading] = useState(false);
@@ -149,18 +152,32 @@ function MainContainer() {
     setRestaurantsError("");
     setRandomSelection(null);
     try {
-      const data = await fetchRestaurants({
-        location,
-        cuisine: cuisineFilter,
-        price: priceFilter,
-        rating: ratingFilter,
-      });
+      let data;
+
+      // If surpriseMode is ON, ignore filters for fetch (only pass location)
+      if (surpriseMode) {
+        data = await fetchRestaurants({
+          location,
+          // ignore all filters
+          cuisine: "",
+          price: "",
+          rating: "",
+        });
+      } else {
+        data = await fetchRestaurants({
+          location,
+          cuisine: cuisineFilter,
+          price: priceFilter,
+          rating: ratingFilter,
+        });
+      }
+
       setRestaurants(data);
       if (!data.length) {
         setRestaurantsError("No restaurants found for your criteria.");
         setRandomSelection(null);
       } else {
-        // pick a random one and set it
+        // pick a random one from the entire data (always random on new fetches)
         const idx = Math.floor(Math.random() * data.length);
         setRandomSelection(data[idx]);
       }
@@ -171,9 +188,16 @@ function MainContainer() {
     } finally {
       setRestaurantsLoading(false);
     }
-  }, [location, cuisineFilter, priceFilter, ratingFilter, locationStatus]);
+  }, [
+    location,
+    cuisineFilter,
+    priceFilter,
+    ratingFilter,
+    locationStatus,
+    surpriseMode
+  ]);
 
-  // Fetch when location/filter changes
+  // Fetch when location/filter changes or if surpriseMode changes
   useEffect(() => {
     getRestaurants();
   }, [getRestaurants]);
@@ -374,6 +398,37 @@ function MainContainer() {
         <h2 style={{ color: "var(--base-light)", margin: 0, fontSize: "1.15rem" }}>
           Filters
         </h2>
+        {/* Surprise Mode Toggle */}
+        <div style={{ marginTop: 8, marginBottom: 10 }}>
+          <button
+            className="btn"
+            style={{
+              background: surpriseMode ? "var(--base-light)" : "var(--base-dark)",
+              color: surpriseMode ? "#fff" : "var(--base-light)",
+              border: "1px solid var(--base-light)",
+              padding: "8px 22px",
+              fontWeight: 600,
+              marginRight: 8,
+              boxShadow: surpriseMode ? "0 2px 8px #00ffff44" : "none",
+              transition: "all 0.1s"
+            }}
+            onClick={() => setSurpriseMode(sm => !sm)}
+            type="button"
+            title={
+              surpriseMode
+                ? "Surprise Mode is ON: All filters ignored"
+                : "Activate Surprise Mode: Pick totally random restaurant"
+            }
+            data-testid="surprise-mode-toggle"
+          >
+            {surpriseMode ? "Surprise Mode: ON 🎲" : "Surprise Mode: OFF"}
+          </button>
+          <span style={{ color: "var(--text-secondary)", fontSize: 13 }}>
+            {surpriseMode
+              ? "All filters disabled. Full randomness activated."
+              : "Enable for a truly random pick (ignores filters)."}
+          </span>
+        </div>
         {/* Location access UI with geolocation + fallback */}
         <div style={{ marginTop: 10, marginBottom: 8, fontSize: 15 }}>
           <div style={{ color: "var(--text-secondary)", fontWeight: 500 }}>
@@ -381,95 +436,97 @@ function MainContainer() {
           </div>
           {renderLocationSection()}
         </div>
-        {/* Filtering options (cuisine, price, rating) */}
-        <div style={{ display: "flex", gap: 24, marginTop: 18, flexWrap: "wrap", alignItems: "flex-end" }}>
-          {/* Cuisine Filter */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label htmlFor="cuisine-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
-              Cuisine
-            </label>
-            <select
-              id="cuisine-filter"
-              value={cuisineFilter}
-              onChange={e => setCuisineFilter(e.target.value)}
-              style={{
-                borderRadius: 4,
-                border: "1px solid var(--border-color)",
-                padding: "7px 8px",
-                fontSize: 15,
-                minWidth: 110,
-                background: "#130f2f",
-                color: "#fff"
-              }}
-            >
-              <option value="">Any</option>
-              <option value="italian">Italian</option>
-              <option value="japanese">Japanese</option>
-              <option value="mexican">Mexican</option>
-              <option value="indian">Indian</option>
-              <option value="american">American</option>
-              <option value="thai">Thai</option>
-              <option value="mediterranean">Mediterranean</option>
-              <option value="chinese">Chinese</option>
-              <option value="vegan">Vegan</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
+        {/* Filtering options (cuisine, price, rating), hidden if surpriseMode */}
+        {!surpriseMode && (
+          <div style={{ display: "flex", gap: 24, marginTop: 18, flexWrap: "wrap", alignItems: "flex-end" }}>
+            {/* Cuisine Filter */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label htmlFor="cuisine-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
+                Cuisine
+              </label>
+              <select
+                id="cuisine-filter"
+                value={cuisineFilter}
+                onChange={e => setCuisineFilter(e.target.value)}
+                style={{
+                  borderRadius: 4,
+                  border: "1px solid var(--border-color)",
+                  padding: "7px 8px",
+                  fontSize: 15,
+                  minWidth: 110,
+                  background: "#130f2f",
+                  color: "#fff"
+                }}
+              >
+                <option value="">Any</option>
+                <option value="italian">Italian</option>
+                <option value="japanese">Japanese</option>
+                <option value="mexican">Mexican</option>
+                <option value="indian">Indian</option>
+                <option value="american">American</option>
+                <option value="thai">Thai</option>
+                <option value="mediterranean">Mediterranean</option>
+                <option value="chinese">Chinese</option>
+                <option value="vegan">Vegan</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
 
-          {/* Price Filter */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label htmlFor="price-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
-              Price
-            </label>
-            <select
-              id="price-filter"
-              value={priceFilter}
-              onChange={e => setPriceFilter(e.target.value)}
-              style={{
-                borderRadius: 4,
-                border: "1px solid var(--border-color)",
-                padding: "7px 8px",
-                fontSize: 15,
-                minWidth: 80,
-                background: "#130f2f",
-                color: "#fff"
-              }}
-            >
-              <option value="">Any</option>
-              <option value="1">$</option>
-              <option value="2">$$</option>
-              <option value="3">$$$</option>
-              <option value="4">$$$$</option>
-            </select>
-          </div>
+            {/* Price Filter */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label htmlFor="price-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
+                Price
+              </label>
+              <select
+                id="price-filter"
+                value={priceFilter}
+                onChange={e => setPriceFilter(e.target.value)}
+                style={{
+                  borderRadius: 4,
+                  border: "1px solid var(--border-color)",
+                  padding: "7px 8px",
+                  fontSize: 15,
+                  minWidth: 80,
+                  background: "#130f2f",
+                  color: "#fff"
+                }}
+              >
+                <option value="">Any</option>
+                <option value="1">$</option>
+                <option value="2">$$</option>
+                <option value="3">$$$</option>
+                <option value="4">$$$$</option>
+              </select>
+            </div>
 
-          {/* Rating Filter */}
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            <label htmlFor="rating-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
-              Min. Rating
-            </label>
-            <select
-              id="rating-filter"
-              value={ratingFilter}
-              onChange={e => setRatingFilter(e.target.value)}
-              style={{
-                borderRadius: 4,
-                border: "1px solid var(--border-color)",
-                padding: "7px 8px",
-                fontSize: 15,
-                minWidth: 90,
-                background: "#130f2f",
-                color: "#fff"
-              }}
-            >
-              <option value="">Any</option>
-              <option value="4.5">4.5★+</option>
-              <option value="4.0">4.0★+</option>
-              <option value="3.5">3.5★+</option>
-              <option value="3.0">3.0★+</option>
-            </select>
+            {/* Rating Filter */}
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <label htmlFor="rating-filter" style={{ color: "var(--text-secondary)", marginBottom: 5, fontSize: 14 }}>
+                Min. Rating
+              </label>
+              <select
+                id="rating-filter"
+                value={ratingFilter}
+                onChange={e => setRatingFilter(e.target.value)}
+                style={{
+                  borderRadius: 4,
+                  border: "1px solid var(--border-color)",
+                  padding: "7px 8px",
+                  fontSize: 15,
+                  minWidth: 90,
+                  background: "#130f2f",
+                  color: "#fff"
+                }}
+              >
+                <option value="">Any</option>
+                <option value="4.5">4.5★+</option>
+                <option value="4.0">4.0★+</option>
+                <option value="3.5">3.5★+</option>
+                <option value="3.0">3.0★+</option>
+              </select>
+            </div>
           </div>
-        </div>
+        )}
       </section>
 
       {/* Restaurant Info Section */}
@@ -526,8 +583,14 @@ function MainContainer() {
         {/* Main action buttons */}
         <button
           className="btn btn-large"
-          style={{ minWidth: 150 }}
+          style={{
+            minWidth: 150,
+            background: surpriseMode ? "var(--base-dark)" : "var(--base-light)",
+            color: surpriseMode ? "var(--base-light)" : "#fff",
+            border: "1px solid var(--base-light)"
+          }}
           onClick={() => {
+            // Pick from all restaurants if surpriseMode, otherwise from filtered
             if (restaurants && restaurants.length > 0) {
               const idx = Math.floor(Math.random() * restaurants.length);
               setRandomSelection(restaurants[idx]);
@@ -535,7 +598,7 @@ function MainContainer() {
           }}
           disabled={restaurantsLoading || !restaurants || restaurants.length === 0}
         >
-          Surprise Me!
+          {surpriseMode ? "SURPRISE ME! (ignore filters)" : "Surprise Me!"}
         </button>
         <button
           className="btn"

@@ -11,9 +11,9 @@ asset bundle.js 1.42 MiB [emitted] (name: main)
 asset index.html 1.98 KiB [emitted]
 runtime modules 27.5 KiB 14 modules
 modules by path ./node_modules/ 1.24 MiB 31 modules
-modules by path ./src/ 32.3 KiB
+modules by path ./src/ 33 KiB
   modules by path ./src/*.css 7.49 KiB 4 modules
-  modules by path ./src/*.js 24.8 KiB
+  modules by path ./src/*.js 25.5 KiB
     ./src/index.js 530 bytes [built] [code generated]
     + 2 modules
 modules by path ./.ve/ 15.1 KiB
@@ -24,44 +24,68 @@ modules by path ./.ve/ 15.1 KiB
     ./.ve/EditorOverlay.css 2.25 KiB [built] [code generated]
     ./node_modules/css-loader/dist/cjs.js!./.ve/EditorOverlay.css 697 bytes [built] [code generated]
   ./.ve/EditorOverlay.jsx 1.58 KiB [built] [code generated]
-webpack 5.99.9 compiled successfully in 1266 ms
+webpack 5.99.9 compiled successfully in 1322 ms
 assets by status 1.98 KiB [cached] 1 asset
-assets by path *.js 1.45 MiB
+assets by path *.js 1.42 MiB
   asset bundle.js 1.42 MiB [emitted] (name: main)
-  asset main.0bfd7065943d72722717.hot-update.js 30.2 KiB [emitted] [immutable] [hmr] (name: main)
-asset main.0bfd7065943d72722717.hot-update.json 28 bytes [emitted] [immutable] [hmr]
-Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.0bfd7065943d72722717.hot-update.js 30.2 KiB
+  asset main.5a229412d831ba8ef9ec.hot-update.js 854 bytes [emitted] [immutable] [hmr] (name: main)
+asset main.5a229412d831ba8ef9ec.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 1.42 MiB = bundle.js 1.42 MiB main.5a229412d831ba8ef9ec.hot-update.js 854 bytes
 cached modules 1.26 MiB [cached] 42 modules
 runtime modules 27.5 KiB 14 modules
-./src/MainContainer.js 23.1 KiB [built] [code generated]
+./src/MainContainer.js 23.7 KiB [built]
 webpack 5.99.9 compiled successfully in 99 ms
 assets by status 1.98 KiB [cached] 1 asset
 assets by path *.js 1.45 MiB
   asset bundle.js 1.42 MiB [emitted] (name: main)
-  asset main.cf91239b965abe8fd372.hot-update.js 30.5 KiB [emitted] [immutable] [hmr] (name: main)
-asset main.cf91239b965abe8fd372.hot-update.json 28 bytes [emitted] [immutable] [hmr]
-Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.cf91239b965abe8fd372.hot-update.js 30.5 KiB
+  asset main.25d2e211881e5aba6cef.hot-update.js 30.9 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.25d2e211881e5aba6cef.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.25d2e211881e5aba6cef.hot-update.js 30.9 KiB
 cached modules 1.26 MiB [cached] 42 modules
 runtime modules 27.5 KiB 14 modules
-./src/MainContainer.js 23.4 KiB [built] [code generated]
-webpack 5.99.9 compiled successfully in 152 ms
+./src/MainContainer.js 23.8 KiB [built] [code generated]
+webpack 5.99.9 compiled successfully in 71 ms
 assets by status 1.98 KiB [cached] 1 asset
 assets by path *.js 1.45 MiB
   asset bundle.js 1.42 MiB [emitted] (name: main)
-  asset main.9532ffbd6be628aaeb91.hot-update.js 30.3 KiB [emitted] [immutable] [hmr] (name: main)
-asset main.9532ffbd6be628aaeb91.hot-update.json 28 bytes [emitted] [immutable] [hmr]
-Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.9532ffbd6be628aaeb91.hot-update.js 30.3 KiB
+  asset main.0ad242a5cc5e7ac54aa6.hot-update.js 31.3 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.0ad242a5cc5e7ac54aa6.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.0ad242a5cc5e7ac54aa6.hot-update.js 31.3 KiB
 cached modules 1.26 MiB [cached] 42 modules
 runtime modules 27.5 KiB 14 modules
-./src/MainContainer.js 23.3 KiB [built] [code generated]
-webpack 5.99.9 compiled successfully in 97 ms
+./src/MainContainer.js 24.2 KiB [built] [code generated]
+webpack 5.99.9 compiled successfully in 83 ms
 assets by status 1.98 KiB [cached] 1 asset
 assets by path *.js 1.45 MiB
   asset bundle.js 1.42 MiB [emitted] (name: main)
-  asset main.8bf813ffca31c5f2b494.hot-update.js 30.7 KiB [emitted] [immutable] [hmr] (name: main)
-asset main.8bf813ffca31c5f2b494.hot-update.json 28 bytes [emitted] [immutable] [hmr]
-Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.8bf813ffca31c5f2b494.hot-update.js 30.7 KiB
+  asset main.0a56acf129432537f7a4.hot-update.js 31.3 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.0a56acf129432537f7a4.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.0a56acf129432537f7a4.hot-update.js 31.3 KiB
 cached modules 1.26 MiB [cached] 42 modules
 runtime modules 27.5 KiB 14 modules
-./src/MainContainer.js 23.7 KiB [built] [code generated]
-webpack 5.99.9 compiled successfully in 92 ms
+./src/MainContainer.js 24.2 KiB [built] [code generated]
+webpack 5.99.9 compiled successfully in 77 ms
+assets by status 1.98 KiB [cached] 1 asset
+assets by path *.js 1.45 MiB
+  asset bundle.js 1.42 MiB [emitted] (name: main)
+  asset main.84bdc159a79e402bac82.hot-update.js 32.9 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.84bdc159a79e402bac82.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.84bdc159a79e402bac82.hot-update.js 32.9 KiB
+cached modules 1.26 MiB [cached] 42 modules
+runtime modules 27.5 KiB 14 modules
+./src/MainContainer.js 25.6 KiB [built] [code generated]
+webpack 5.99.9 compiled successfully in 147 ms
+assets by status 1.98 KiB [cached] 1 asset
+assets by path *.js 1.45 MiB
+  asset bundle.js 1.42 MiB [emitted] (name: main)
+  asset main.51f4f36135c1ab04b023.hot-update.js 33.3 KiB [emitted] [immutable] [hmr] (name: main)
+asset main.51f4f36135c1ab04b023.hot-update.json 28 bytes [emitted] [immutable] [hmr]
+Entrypoint main 1.45 MiB = bundle.js 1.42 MiB main.51f4f36135c1ab04b023.hot-update.js 33.3 KiB
+cached modules 1.26 MiB [cached] 42 modules
+runtime modules 27.5 KiB 14 modules
+./src/MainContainer.js 25.9 KiB [built] [code generated]
+webpack 5.99.9 compiled successfully in 91 ms
+assets by status 1.42 MiB [cached] 2 assets
+cached modules 1.26 MiB (javascript) 27.5 KiB (runtime) [cached] 56 modules
+./src/MainContainer.js 25.9 KiB [built]
+webpack 5.99.9 compiled successfully in 78 ms
