@@ -544,23 +544,64 @@ function MainContainer() {
       >
         <h2 style={{ marginTop: 0, marginBottom: 8 }}>Restaurant Info</h2>
         {/* Restaurant display */}
-        <div style={{ color: "var(--text-secondary)", fontSize: 16 }}>
-          {restaurantsLoading && <span>Loading restaurants...</span>}
-          {(!restaurantsLoading && restaurantsError) && (
-            <span style={{ color: "#fa6464" }}>{restaurantsError}</span>
+        <div style={{ color: "var(--text-secondary)", fontSize: 16, minHeight: 48, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          {restaurantsLoading && (
+            <span style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              color: 'var(--base-dark)',
+              fontWeight: 500,
+              fontSize: 17
+            }}>
+              <span 
+                style={{
+                  border: "3px solid var(--base-dark)",
+                  borderTop: "3px solid var(--base-light)",
+                  borderRadius: "50%",
+                  width: 22,
+                  height: 22,
+                  marginRight: 7,
+                  animation: "spin 1s linear infinite",
+                  display: 'inline-block'
+                }}
+              />
+              Loading restaurants...
+              <style>{`
+                @keyframes spin {
+                  0% { transform: rotate(0deg);}
+                  100% { transform: rotate(360deg);}
+                }
+              `}</style>
+            </span>
           )}
 
-          {/* Show the currently selected random restaurant with detail card */}
-          {(!restaurantsLoading && !restaurantsError && randomSelection) && (
+          {/* Error state */}
+          {!restaurantsLoading && restaurantsError && (
+            <span style={{ color: "#fa6464", fontWeight: 500 }}>
+              {restaurantsError || "Something went wrong fetching restaurants."}
+            </span>
+          )}
+
+          {/* Show restaurant card if found */}
+          {!restaurantsLoading && !restaurantsError && randomSelection && (
             <RestaurantCard restaurant={randomSelection} />
           )}
-          {(!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 1 && !randomSelection) && (
+
+          {/* If there are restaurants but no current selection (shouldn't normally happen, but fallback) */}
+          {!restaurantsLoading && !restaurantsError && restaurants && restaurants.length > 1 && !randomSelection && (
             <span>
               {restaurants.length} restaurants found. Click "Surprise Me" to pick one at random!
             </span>
           )}
-          {(!restaurantsLoading && !restaurantsError && (!restaurants || restaurants.length === 0)) && (
-            <span>[Your surprise restaurant will appear here!]</span>
+
+          {/* Empty state: no restaurants found */}
+          {!restaurantsLoading && !restaurantsError && (!restaurants || restaurants.length === 0) && (
+            <span style={{
+              fontStyle: "italic",
+              color: '#1A1A1A',
+              opacity: 0.74
+            }}>[No restaurants found for your search. Try different filters or location!]</span>
           )}
         </div>
       </section>
