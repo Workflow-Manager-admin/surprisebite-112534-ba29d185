@@ -1,0 +1,4 @@
+{
+    "command": "npm run test",
+    "working_directory": "/home/kavia/workspace/code-generation/surprisebite-112534-ba29d185/surprisebite_frontend"
+}
